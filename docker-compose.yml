@@ -1,0 +1,38 @@
+version: "3"
+
+# networks:
+  # test_overlay:
+    # driver: overlay
+
+services:
+  webapi:
+    image: test/springsecurityjpa:latest
+    depends_on:
+      - db
+    build:
+      context: ./authservice-api
+      dockerfile: Dockerfile
+    ports:
+      - "7050:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/springsecurity
+      - SPRING_DATASOURCE_USERNAME=testuser
+      - SPRING_DATASOURCE_PASSWORD=testuserpassword
+    # networks:
+      # - test_overlay
+        #command: java app.jar
+        # command: dotnet test
+
+  db:
+    image:
+      postgres:13
+    build:
+      context: ./authservice-db
+      dockerfile: Dockerfile
+    ports:
+      - "7055:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testuserpassword
+      - POSTGRES_DB=springsecurity
