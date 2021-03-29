@@ -11,7 +11,7 @@ services:
       - db
     build:
       context: ./authservice-api
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.nobuild
     ports:
       - "7050:8080"
     environment:

@@ -7,8 +7,11 @@ import gordon.springsecurityjpa.models.UserRepository;
 import java.security.Principal;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,20 +29,26 @@ public class UserController {
 
     JwtUtil jwtUtil;
 
-    @PostMapping(value = "/users")
-    public ResponseEntity<?> createUser(User accountDto){
-        User user = new User();
-        user.setUsername(accountDto.getUsername());
-        user.setPassword(accountDto.getPassword());
+    Logger log = LoggerFactory.getLogger(UserController.class);
 
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        user.setPassword(null);
+    @CrossOrigin
+    @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createUser(@RequestBody User user){
         return ResponseEntity.ok(user);
+//        log.info("POST /users" + accountDto.getUsername());
+//        User user = new User();
+//        user.setUsername(accountDto.getUsername());
+//        user.setPassword(accountDto.getPassword());
+//
+//        try {
+//            userRepository.save(user);
+//        } catch (Exception e) {
+//            log.error(e.getMessage ());
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        user.setPassword(null);
+//        return ResponseEntity.ok(user);
     }
 
     @GetMapping(value = "/users")
