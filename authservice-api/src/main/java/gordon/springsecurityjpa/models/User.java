@@ -17,6 +17,16 @@ public class User {
     private boolean active;
     private String roles;
 
+    public static User copyUser(User user){
+        User toReturn = new User();
+        toReturn.id = user.getId();
+        toReturn.username = user.getUsername();
+        toReturn.password = user.getPassword();
+        toReturn.active = user.isActive();
+        toReturn.roles = user.getRoles();
+        return toReturn;
+    }
+
     public String getId() {
         return id;
     }

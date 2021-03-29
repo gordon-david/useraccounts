@@ -2,6 +2,7 @@ package gordon.springsecurityjpa.controllers;
 
 import gordon.springsecurityjpa.JwtUtil;
 import gordon.springsecurityjpa.models.User;
+import gordon.springsecurityjpa.models.UserControllerResponse;
 import gordon.springsecurityjpa.models.UserRepository;
 
 import java.security.Principal;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
+
 @RestController
 public class UserController {
 
@@ -31,9 +34,20 @@ public class UserController {
 
     Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @CrossOrigin
     @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody User user){
+        UserControllerResponse responseData = new UserControllerResponse();
+        user.setRoles("USER");
+        user.setActive(true);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        responseData.setUser(user);
+        try {
+            userRepository.save(user);
+        } catch (EntityExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseData);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(responseData);
+        }
         return ResponseEntity.ok(user);
 //        log.info("POST /users" + accountDto.getUsername());
 //        User user = new User();

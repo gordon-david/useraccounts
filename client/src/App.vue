@@ -122,34 +122,14 @@ export default {
       },
     };
   },
-  mounted(){
-    fetch(url + "/gettest", {
-      method: "GET"
-    }).then(response => {
-      console.log(`GET TEST => ${response.status}`)
-    })
-
-    fetch(url + "/posttest", {
-      method: "POST"
-    }).then(response => {
-      console.log(`POST TEST => ${response.status}`)
-    })
-
-    fetch(url + "/users", {
-      method: "POST",
-      body: JSON.stringify({username:"test",password:"test"}),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(response => {
-      console.log(`POST /users => ${response.status}`);
-    })
-  },
   methods: {
     submitSignUp() {
       console.log(JSON.stringify(this.signup));
       fetch(url + "/users", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           username: this.signup.username,
           password: this.signup.password,
@@ -162,7 +142,6 @@ export default {
       console.log(JSON.stringify(this.login));
       fetch(url + "/users/authenticate", {
         method: "POST",
-        mode: "cors",
         headers: {
           "Content-Type": "application/json"
         },
@@ -172,6 +151,7 @@ export default {
         }),
       }).then((response) => {
         console.log(response.status);
+        response.json().then( data => console.log(data))
       });
     },
   },

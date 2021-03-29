@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,19 +42,24 @@ public class AuthController {
     @PostMapping(value = "/users/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception {
+        Authentication auth;
 
-                logging.info("/users/authenticate");
+        logging.info("/users/authenticate");
+        logging.info(authenticationRequest.toString());
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
+        } catch (LockedException e) {
+            throw new Exception("Locked", e);
+        } catch (DisabledException e) {
+            throw new Exception("Disabled", e);
         }
 
         final ApplicationUserDetails userDetails = (ApplicationUserDetails) userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = JwtUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
