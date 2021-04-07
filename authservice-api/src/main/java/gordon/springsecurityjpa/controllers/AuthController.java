@@ -60,7 +60,8 @@ public class AuthController {
         final ApplicationUserDetails userDetails = (ApplicationUserDetails) userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = JwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);
+        return ResponseEntity.ok(authenticationResponse);
     }
 
     // Revoking an authentication token
