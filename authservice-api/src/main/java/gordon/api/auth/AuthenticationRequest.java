@@ -1,4 +1,4 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.auth;
 
 public class AuthenticationRequest {
     private String username;

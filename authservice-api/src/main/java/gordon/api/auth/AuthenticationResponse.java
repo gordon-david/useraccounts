@@ -1,4 +1,4 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.auth;
 
 public class AuthenticationResponse {
     private final String jwt;

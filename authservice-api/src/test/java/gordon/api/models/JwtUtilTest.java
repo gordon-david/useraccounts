@@ -1,13 +1,15 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.models;
 
-import gordon.springsecurityjpa.JwtUtil;
+import gordon.api.auth.AuthUserDetails;
+import gordon.api.common.JwtUtil;
+import gordon.api.users.User;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Test;
 
 class JwtUtilTest {
 
-    private ApplicationUserDetails makeTestUserSubject() {
-        return new ApplicationUserDetails(new User() {{
+    private AuthUserDetails makeTestUserSubject() {
+        return new AuthUserDetails(new User() {{
             setUsername("testUser");
             setRoles("ROLE_USER");
         }});

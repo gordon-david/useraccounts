@@ -1,9 +1,6 @@
-package gordon.springsecurityjpa.controllers;
+package gordon.api.auth;
 
-import gordon.springsecurityjpa.JwtUtil;
-import gordon.springsecurityjpa.models.ApplicationUserDetails;
-import gordon.springsecurityjpa.models.AuthenticationRequest;
-import gordon.springsecurityjpa.models.AuthenticationResponse;
+import gordon.api.common.JwtUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * RestController that handles user authentication.
- * 
+ * <p>
  * DEPENDENCIES: AuthenticationManager, UserDetailsService
- * 
  */
 
 @RestController
@@ -34,7 +30,7 @@ public class AuthController {
 
     /**
      * Issues an authentication token
-     * 
+     *
      * @param authenticationRequest
      * @return
      * @throws Exception
@@ -57,7 +53,7 @@ public class AuthController {
             throw new Exception("Disabled", e);
         }
 
-        final ApplicationUserDetails userDetails = (ApplicationUserDetails) userDetailsService
+        final AuthUserDetails userDetails = (AuthUserDetails) userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = JwtUtil.generateToken(userDetails);
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);

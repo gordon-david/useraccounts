@@ -1,4 +1,4 @@
-package gordon.springsecurityjpa;
+package gordon.api.common;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

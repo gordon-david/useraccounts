@@ -1,5 +1,6 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.auth;
 
+import gordon.api.users.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,15 +10,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ApplicationUserDetails implements UserDetails {
+public class AuthUserDetails implements UserDetails {
 
     private final String username;
     private final String password;
     private final boolean active;
     private List<GrantedAuthority> authorities;
 
-    public ApplicationUserDetails(User user) {
-        this.active = user.isActive();
+    public AuthUserDetails(User user) {
+        this.active = user.getActive();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.authorities = Arrays.stream(user.getRoles().split(","))

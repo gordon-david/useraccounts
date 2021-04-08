@@ -1,11 +1,11 @@
-package gordon.springsecurityjpa;
+package gordon.api.common;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+import gordon.api.auth.AuthUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,13 +19,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    StandardUserDetailsService userDetailsService;
+    AuthUserDetailsService authUserDetailsService;
 
     @Bean
     CorsFilter corsFilter() {
@@ -41,7 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(authUserDetailsService);
     }
 
     @Override

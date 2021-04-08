@@ -1,20 +1,26 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.users;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+
+    @Column(nullable = false, unique = true)
+    @NotNull
     private String username;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private boolean active;
+
+    @NotNull
     private String roles;
 
     public static User copyUser(User user){
@@ -22,7 +28,7 @@ public class User {
         toReturn.id = user.getId();
         toReturn.username = user.getUsername();
         toReturn.password = user.getPassword();
-        toReturn.active = user.isActive();
+        toReturn.active = user.getActive();
         toReturn.roles = user.getRoles();
         return toReturn;
     }
@@ -51,7 +57,7 @@ public class User {
         this.password = password;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return active;
     }
 

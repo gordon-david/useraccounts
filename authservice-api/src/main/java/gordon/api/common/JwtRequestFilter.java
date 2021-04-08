@@ -1,6 +1,6 @@
-package gordon.springsecurityjpa.filters;
+package gordon.api.common;
 
-import gordon.springsecurityjpa.JwtUtil;
+import gordon.api.common.JwtUtil;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

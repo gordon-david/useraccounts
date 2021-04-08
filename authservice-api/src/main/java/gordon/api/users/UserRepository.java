@@ -1,4 +1,4 @@
-package gordon.springsecurityjpa.models;
+package gordon.api.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
