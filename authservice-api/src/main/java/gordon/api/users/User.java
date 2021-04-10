@@ -11,10 +11,10 @@ public class User {
     private String id;
 
     @Column(nullable = false, unique = true)
-    @NotNull
+    @NotNull(groups = UserIdentityValidationGroup.class)
     private String username;
 
-    @NotNull
+    @NotNull(groups = UserIdentityValidationGroup.class)
     private String password;
 
     @NotNull

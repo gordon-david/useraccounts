@@ -1,16 +1,20 @@
 package gordon.api.users;
 
-import gordon.api.auth.AuthUserDetails;
-import org.hibernate.exception.ConstraintViolationException;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.persistence.EntityExistsException;
-import javax.validation.Valid;
+import javax.validation.*;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Service
 @Validated
@@ -20,15 +24,26 @@ public class UserDataService {
     @Autowired
     UserRepository userRepository;
 
-    public User retrieve(String username) throws Exception {
-        Optional<User> user = userRepository.findByUsername(username);
-        user.orElseThrow(() -> new Exception("Not Found: " + username));
-        return user.get();
+    public Optional<User> retrieve(String username) {
+
+        if(username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username Can Not Be Null");
+        }
+
+        return userRepository.findByUsername(username);
     }
 
-    public User create(@Valid User user) {
+    public User create(User user) throws UsernameExistsException, ConstraintViolationException {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+
+        Set<ConstraintViolation<User>> violations = validator.validate(user, UserIdentityValidationGroup.class);
+
+        if(!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new UsernameExistsException();
         }
 
@@ -36,4 +51,35 @@ public class UserDataService {
     }
 
 
+    /**
+     *
+     * @param original
+     * @param updated
+     * @return User model that represents the current, updated values
+     */
+    public User update(User original, User updated) {
+
+        var validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+        var violations = validator.validateProperty(original, "username", UserIdentityValidationGroup.class);
+        if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
+
+        var fromDatabase = userRepository.findByUsername(original.getUsername());
+
+        return original;
+    }
+
+    public void test(@NotNull String username){
+//        var validator = Validation.buildDefaultValidatorFactory().getValidator();
+//
+//        var violations = validator.validate(username);
+//
+//        if(!violations.isEmpty()){
+//            throw new ConstraintViolationException(violations);
+//        }
+    }
+
+    public User delete(User user){
+        throw new RuntimeException("Not Implemented");
+    }
 }
