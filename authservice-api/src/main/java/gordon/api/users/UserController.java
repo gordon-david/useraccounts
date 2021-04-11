@@ -28,7 +28,6 @@ public class UserController {
 
     Logger log = LoggerFactory.getLogger(UserController.class);
 
-
     @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserControllerResponse> createUser(@RequestBody User user){
         /* Local Variable Declaration */

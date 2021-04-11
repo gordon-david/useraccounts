@@ -25,6 +25,7 @@ public class UserDataService {
     UserRepository userRepository;
 
     public Optional<User> retrieve(String username) {
+        Optional<User> fromRepository;
 
         if(username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username Can Not Be Null");
@@ -48,38 +49,5 @@ public class UserDataService {
         }
 
         return userRepository.save(user);
-    }
-
-
-    /**
-     *
-     * @param original
-     * @param updated
-     * @return User model that represents the current, updated values
-     */
-    public User update(User original, User updated) {
-
-        var validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-        var violations = validator.validateProperty(original, "username", UserIdentityValidationGroup.class);
-        if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
-
-        var fromDatabase = userRepository.findByUsername(original.getUsername());
-
-        return original;
-    }
-
-    public void test(@NotNull String username){
-//        var validator = Validation.buildDefaultValidatorFactory().getValidator();
-//
-//        var violations = validator.validate(username);
-//
-//        if(!violations.isEmpty()){
-//            throw new ConstraintViolationException(violations);
-//        }
-    }
-
-    public User delete(User user){
-        throw new RuntimeException("Not Implemented");
     }
 }

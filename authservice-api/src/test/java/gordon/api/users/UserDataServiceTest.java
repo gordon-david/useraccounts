@@ -19,6 +19,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SpringBootTest
 class UserDataServiceTest {
 
@@ -35,8 +37,8 @@ class UserDataServiceTest {
 
   /*EntityManagerFactory is mocked to avoid requiring a running database connection,
   these tests do not rely on a live database connection*/
-  @MockBean
-  EntityManagerFactory entityManagerFactory;
+//  @MockBean
+//  EntityManagerFactory entityManagerFactory;
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -68,22 +70,19 @@ class UserDataServiceTest {
   }
 
   @Test
-  void Given_UserDoesNotExist_When_UserIsRetrievedByUsername_Then_ExceptionThrown() {
+  void Given_UserDoesNotExist_When_UserIsRetrievedByUsername_Then_ReturnEmptyOptional() {
 
+    Optional<User> userRetrieved;
     boolean exceptionThrown = false;
 
     // Arrange
     Mockito.when(mockUserRepository.findByUsername(username)).thenReturn(Optional.empty());
 
     // Act
-    try {
-      userDataService.retrieve(username);
-    } catch (Exception e) {
-      exceptionThrown = true;
-    }
+      userRetrieved = userDataService.retrieve(username);
 
     // Assert
-    Assertions.assertTrue(exceptionThrown);
+    Assertions.assertTrue(userRetrieved.isEmpty());
   }
 
   @Test
