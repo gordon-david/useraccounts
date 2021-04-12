@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityExistsException;
+import javax.validation.ConstraintViolationException;
 
 @RestController
 public class UserController {
@@ -51,19 +49,20 @@ public class UserController {
         user.setRoles("USER");
         user.setActive(true);
 
-        /* encode the password received in the request */
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         /* place the user in the response data we will return to the client */
         responseData.setUser(user);
 
         /* save user to persistence, handle exceptions */
         try {
-            userDataService.create(user);
-        } catch (EntityExistsException e){
+            userDataService.registerNewUser(user);
+        } catch (UsernameExistsException e) {
             responseData.setMessage("username exists");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(responseData);
+        } catch (ConstraintViolationException e) {
+            responseData.setMessage("constraint violation");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         } catch (Exception e) {
+            responseData.setMessage("unknown issue");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseData);
         }
 

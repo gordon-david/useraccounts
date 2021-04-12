@@ -30,6 +30,4 @@ class UserRepositoryTest {
     assertNotNull(entityManager);
     assertNotNull(userRepository);
   }
-
-
 }

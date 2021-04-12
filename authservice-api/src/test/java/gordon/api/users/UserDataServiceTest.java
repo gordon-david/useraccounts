@@ -1,6 +1,5 @@
 package gordon.api.users;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.EntityManagerFactory;
-import javax.validation.Constraint;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
@@ -34,6 +32,9 @@ class UserDataServiceTest {
 
   @MockBean(answer = Answers.RETURNS_SMART_NULLS)
   UserRepository mockUserRepository;
+
+  @MockBean
+  PasswordEncoder passwordEncoder;
 
   /*EntityManagerFactory is mocked to avoid requiring a running database connection,
   these tests do not rely on a live database connection*/
@@ -93,7 +94,7 @@ class UserDataServiceTest {
     user.setPassword(password);
     Mockito.when(mockUserRepository.save(Mockito.any(User.class))).thenReturn(user);
 
-    User userReturned = userDataService.create(user);
+    User userReturned = userDataService.registerNewUser(user);
 
     Assertions.assertNotNull(userReturned);
     Assertions.assertEquals(user.getUsername(), userReturned.getUsername());
@@ -109,7 +110,7 @@ class UserDataServiceTest {
     Mockito.when(mockUserRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
     try {
-      userReturned = userDataService.create(user);
+      userReturned = userDataService.registerNewUser(user);
     } catch (UsernameExistsException e) {
       usernameExistsExceptionThrown = true;
     }
@@ -123,7 +124,7 @@ class UserDataServiceTest {
     boolean constraintViolationExceptionThrown = false;
 
     try {
-      userDataService.create(user);
+      userDataService.registerNewUser(user);
     } catch (javax.validation.ConstraintViolationException e) {
       if (e.getConstraintViolations().stream().anyMatch(violation
               -> checkConstrainViolation(
@@ -146,7 +147,7 @@ class UserDataServiceTest {
     boolean constraintViolationExceptionThrown = false;
 
     try {
-      userDataService.create(user);
+      userDataService.registerNewUser(user);
     } catch (ConstraintViolationException e) {
       if (e.getConstraintViolations().stream()
               .anyMatch(violation
@@ -160,6 +161,11 @@ class UserDataServiceTest {
 
     Assertions.assertTrue(constraintViolationExceptionThrown);
     Mockito.verifyNoInteractions(mockUserRepository);
+  }
+
+  @Test
+  void When_UserIsCreated_Then_PasswordIsEncoded(){
+    Assertions.fail("Not Implemented");
   }
 
   private boolean checkConstrainViolation(ConstraintViolation<?> violation, String property, Class<?> constraintType) {

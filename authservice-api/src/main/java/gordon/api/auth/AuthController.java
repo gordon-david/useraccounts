@@ -36,7 +36,7 @@ public class AuthController {
      * @throws Exception
      */
     @PostMapping(value = "/users/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception {
         Authentication auth;
 

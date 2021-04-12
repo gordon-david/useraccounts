@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private int id;
 
     @Column(nullable = false, unique = true)
     @NotNull(groups = UserIdentityValidationGroup.class)
@@ -33,11 +33,11 @@ public class User {
         return toReturn;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
