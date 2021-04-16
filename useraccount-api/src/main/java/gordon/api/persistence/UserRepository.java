@@ -8,4 +8,6 @@ import java.util.Optional;
     Optional<User> findByUsername(String username);
     
     Optional<User> findById(String id);
-}
+
+   User getById(int id);
+ }

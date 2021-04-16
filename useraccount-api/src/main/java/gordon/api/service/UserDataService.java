@@ -5,12 +5,16 @@ import gordon.api.persistence.UserRepository;
 import gordon.api.validation.UserIdentityValidationGroup;
 import gordon.api.validation.UsernameExistsException;
 import gordon.api.web.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.Id;
 import javax.validation.*;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,6 +22,8 @@ import java.util.Set;
 @Service
 @Validated
 public class UserDataService {
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     UserRepository userRepository;
@@ -54,5 +60,13 @@ public class UserDataService {
         userEntity.setRoles("ROLE_USER");
 
         return userRepository.save(userEntity);
+    }
+
+    public User update(@NotNull int userId, @NotNull UserDto updated) {
+        User toUpdate = userRepository.getById(userId);
+
+        toUpdate.setUsername(updated.getUsername());
+
+        return userRepository.save(toUpdate);
     }
 }
