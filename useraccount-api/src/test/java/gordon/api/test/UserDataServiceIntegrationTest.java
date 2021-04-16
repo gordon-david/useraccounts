@@ -2,6 +2,7 @@ package gordon.api.test;
 
 import gordon.api.Application;
 import gordon.api.persistence.User;
+import gordon.api.persistence.UserRepository;
 import gordon.api.service.UserDataService;
 import gordon.api.web.UserDto;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,9 @@ public class UserDataServiceIntegrationTest {
   @Autowired
   UserDataService userDataService;
 
+  @Autowired
+  UserRepository userRepository;
+
   User userInDatabase;
 
   @BeforeEach
@@ -40,5 +44,11 @@ public class UserDataServiceIntegrationTest {
 
     assertTrue(updatedEntity.isPresent());
     assertEquals(updatedEntity.get().getUsername(), userDto.getUsername());
+  }
+
+  @Test
+  void canDeleteAUser(){
+    userDataService.deleteByUsername(userInDatabase.getUsername());
+    assertTrue(userRepository.findByUsername(userInDatabase.getUsername()).isEmpty());
   }
 }
