@@ -6,6 +6,7 @@ import java.util.Collections;
 import gordon.api.security.AuthUserDetailsService;
 import gordon.api.web.JwtRequestAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,10 +31,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     JwtRequestAuthenticationFilter jwtRequestAuthenticationFilter;
 
+    @Value("${client.url}")
+    String clientUrl;
+
     @Bean
     CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+        configuration.setAllowedOrigins(Collections.singletonList(clientUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("*"));

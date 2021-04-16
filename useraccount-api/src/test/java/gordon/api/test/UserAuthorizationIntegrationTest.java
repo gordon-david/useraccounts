@@ -11,7 +11,6 @@ import gordon.api.security.JwtUtil;
 import gordon.api.spring.SecurityConfiguration;
 import gordon.api.persistence.User;
 import gordon.api.persistence.UserRepository;
-import gordon.api.spring.UserConfiguration;
 import gordon.api.web.UserDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,7 @@ import org.springframework.http.*;
 
 import java.util.Optional;
 
-@SpringBootTest(classes = {Application.class, SecurityConfiguration.class, UserConfiguration.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {Application.class, SecurityConfiguration.class, }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserAuthorizationIntegrationTest {
 
   private final Logger log = LoggerFactory.getLogger(this.getClass());

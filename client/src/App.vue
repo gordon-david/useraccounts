@@ -4,9 +4,9 @@
     class="min-w-screen min-h-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans py-6"
   >
     <div class="container">
-      <resource-tester />
+      <resource-tester v-bind:jwt="this.jwt" />
       <sign-up-form v-bind:apiUrl="this.url" />
-      <login-form v-bind:apiUrl="this.url" />
+      <login-form v-bind:apiUrl="this.url" @Authenticated="authenticated"/>
     </div>
   </div>
 </template>
@@ -25,8 +25,15 @@ export default {
   data() {
     return {
       url: "http://localhost:7050",
+      jwt: ""
     };
   },
-  methods: {},
+  methods: {
+    authenticated: function(event){
+      console.log(event);
+      this.jwt = event.jwt
+      console.log(this.jwt);
+    }
+  },
 };
 </script>

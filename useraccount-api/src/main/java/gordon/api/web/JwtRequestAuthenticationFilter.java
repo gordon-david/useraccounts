@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Order(1)
 public class JwtRequestAuthenticationFilter extends OncePerRequestFilter {
 
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
+
   @Autowired
   AuthUserDetailsService userDetailsService;
 
@@ -35,6 +39,10 @@ public class JwtRequestAuthenticationFilter extends OncePerRequestFilter {
     FilterChain filterChain
   )
     throws ServletException, IOException {
+
+log.info("ping from filter");
+log.info(httpServletRequest.getContentType());
+
     final String authorizationHeader = httpServletRequest.getHeader(
       "Authorization"
     );

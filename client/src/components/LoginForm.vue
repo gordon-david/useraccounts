@@ -51,6 +51,7 @@
 export default {
   props: {
     apiUrl: String,
+    jwt: String
   },
   data() {
     return {
@@ -70,7 +71,10 @@ export default {
           password: this.password,
         }),
       }).then((response) => {
-        response.json().then((data) => console.log(data));
+        response.json().then((data) => {
+          console.log(data)
+          this.$emit("Authenticated", {"jwt": data["jwt"]})
+          });
       });
     },
   },

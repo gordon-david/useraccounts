@@ -28,6 +28,9 @@
 
 <script>
 export default {
+  props:{
+    jwt: String
+  },
   data: function () {
     return {
       nominal: "bg-blue-100 text-blue-900 border-blue-200",
@@ -53,12 +56,18 @@ export default {
           }
           this.adminClass = this.success;
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
           this.adminClass = this.error;
         });
     },
     fetchUser() {
-      fetch("http://localhost:7050/usertestresource")
+      console.log("ping");
+      fetch("http://localhost:7050/usertestresource", {
+        headers: {
+          "Authorization": "Bearer " + this.jwt
+        }
+      })
         .then((response) => {
           if (!response.ok) {
             this.userClass = this.error;
@@ -66,7 +75,8 @@ export default {
           }
           this.userClass = this.success;
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
           this.userClass = this.error;
         });
     },
@@ -79,7 +89,8 @@ export default {
           }
           this.homeClass = this.success;
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
           this.homeClass = this.error;
         });
     },

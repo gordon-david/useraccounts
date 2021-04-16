@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 @RestController
@@ -20,8 +21,9 @@ public class UserController {
 
   Logger log = LoggerFactory.getLogger(UserController.class);
 
-  @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<GenericResponse> createUser(@RequestBody @Valid UserDto user) {
+  @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> createUser(@RequestBody UserDto user) {
+    log.info("ping");
     userDataService.registerNewUser(user);
     return ResponseEntity.accepted().build();
   }

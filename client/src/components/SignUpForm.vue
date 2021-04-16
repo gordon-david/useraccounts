@@ -60,11 +60,12 @@ export default {
   },
   methods: {
     submitSignUp() {
-      console.log(JSON.stringify(this.signup));
+      console.log(JSON.stringify(this.username));
       fetch(this.apiUrl + "/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify({
           username: this.username,

@@ -7,8 +7,7 @@ import gordon.api.service.UserDataService;
 import gordon.api.spring.SecurityConfiguration;
 import gordon.api.persistence.User;
 import gordon.api.persistence.UserRepository;
-import gordon.api.spring.UserConfiguration;
-import gordon.api.web.GenericResponse;
+import gordon.api.web.UserDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 
-@SpringBootTest(classes = {Application.class, SecurityConfiguration.class, UserConfiguration.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {Application.class, SecurityConfiguration.class, }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRegistrationIntegrationTest {
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -35,12 +34,12 @@ public class UserRegistrationIntegrationTest {
   UserDataService userDataService;
   @Autowired
   ObjectMapper objectMapper;
-  TestRestTemplate restTemplate;
+  RestTemplate restTemplate;
   HttpHeaders headers;
 
   @BeforeEach
   void setup() {
-    restTemplate = new TestRestTemplate();
+    restTemplate = new RestTemplate();
     headers = new HttpHeaders();
     userRepository.deleteAll();
   }
@@ -55,16 +54,15 @@ public class UserRegistrationIntegrationTest {
 
   @Test
   void Given_NotPersistedUser_When_UserCreationRequest_Then_UserIsPersisted() throws JsonProcessingException {
-    User newUser = new User();
+    UserDto newUser = new UserDto();
     newUser.setUsername("username");
     newUser.setPassword("password");
+
     String requestBody = objectMapper.writeValueAsString(newUser);
     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
     HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
-
     ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/users", HttpMethod.POST, httpEntity, String.class);
-
-    GenericResponse responseBody = objectMapper.readValue(response.getBody(), GenericResponse.class);
     Optional<User> fromRepository = userRepository.findByUsername(newUser.getUsername());
 
     Assertions.assertTrue(fromRepository.isPresent());
