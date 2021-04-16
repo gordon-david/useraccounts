@@ -16,14 +16,20 @@ public class AuthUserDetails implements UserDetails {
     private final String password;
     private final boolean active;
     private List<GrantedAuthority> authorities;
+    private final int id;
 
     public AuthUserDetails(User user) {
+        this.id = user.getId();
         this.active = user.getActive();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.authorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
