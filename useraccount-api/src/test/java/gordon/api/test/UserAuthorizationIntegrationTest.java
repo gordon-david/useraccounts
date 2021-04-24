@@ -102,20 +102,4 @@ public class UserAuthorizationIntegrationTest {
 
     Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
   }
-
-  @Test
-  void sample(){
-    // throws auth exception
-    HttpEntity<UserDto> httpEntity = new HttpEntity<>(userDto);
-
-    ResponseEntity<String> responseEntity = restTemplate
-            .exchange(
-                    "http://localhost:" + port + "/users/authenticate",
-                    HttpMethod.POST,
-                    httpEntity,
-                    String.class);
-
-    Assertions.assertEquals(responseEntity.getStatusCodeValue(), HttpStatus.UNAUTHORIZED.value());
-
-  }
 }

@@ -2,6 +2,7 @@ package gordon.api.web;
 
 import gordon.api.security.AuthUserDetailsService;
 import gordon.api.security.JwtUtil;
+
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,45 +35,42 @@ public class JwtRequestAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-    HttpServletRequest httpServletRequest,
-    HttpServletResponse httpServletResponse,
-    FilterChain filterChain
+          HttpServletRequest httpServletRequest,
+          HttpServletResponse httpServletResponse,
+          FilterChain filterChain
   )
-    throws ServletException, IOException {
-
-log.info("ping from filter");
-log.info(httpServletRequest.getContentType());
+          throws ServletException, IOException {
 
     final String authorizationHeader = httpServletRequest.getHeader(
-      "Authorization"
+            "Authorization"
     );
     String username = null;
     String jwt = null;
 
     if (
-      authorizationHeader != null && authorizationHeader.startsWith(("Bearer "))
+            authorizationHeader != null && authorizationHeader.startsWith(("Bearer "))
     ) {
       jwt = authorizationHeader.substring(7);
       username = JwtUtil.extractUsername(jwt);
     }
 
     if (
-      username != null &&
-      SecurityContextHolder.getContext().getAuthentication() == null
+            username != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null
     ) {
       UserDetails userDetails = userDetailsService.loadUserByUsername(username);
       if (JwtUtil.validateToken(jwt, userDetails)) {
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-          userDetails,
-          null,
-          userDetails.getAuthorities()
+                userDetails,
+                null,
+                userDetails.getAuthorities()
         );
         usernamePasswordAuthenticationToken.setDetails(
-          new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
+                new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
         );
         SecurityContextHolder
-          .getContext()
-          .setAuthentication(usernamePasswordAuthenticationToken);
+                .getContext()
+                .setAuthentication(usernamePasswordAuthenticationToken);
       }
     }
 

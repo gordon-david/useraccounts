@@ -1,8 +1,10 @@
 package gordon.api.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gordon.api.Application;
 import gordon.api.persistence.User;
+import gordon.api.security.AuthUserDetails;
 import gordon.api.service.UserDataService;
 import gordon.api.web.UserController;
 import gordon.api.web.GenericResponse;
@@ -21,6 +23,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.*;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -62,13 +67,14 @@ class UserControllerTest {
     }
 
     @Test
-    void CreatNewUser() throws Exception {
+    void CanCreateNewUser() throws Exception {
         UserDto newUser = new UserDto();
         newUser.setPassword(USER_PASSWORD);
         newUser.setUsername(USER_USERNAME);
 
         GenericResponse responseContent;
 
+        // mock userdataservice.registerNewUser, called by POST /user endpoint
         Mockito.when(mockUserDataService.registerNewUser(Mockito.any(UserDto.class))).thenReturn(new User());
 
         ResultActions resultActions = mockMvc
@@ -79,9 +85,38 @@ class UserControllerTest {
         MvcResult mvcResult = resultActions.andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
 
-        responseContent = objectMapper.readValue(response.getContentAsString(), GenericResponse.class);
-
         Assertions.assertEquals(response.getStatus(), HttpStatus.ACCEPTED.value());
-        Assertions.assertEquals(response.getContentType(), MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    @Test
+    void Given_AuthenticatedUser_Then_CanUpdateUser() throws Exception {
+        User userInDB = new User();
+        userInDB.setPassword(USER_PASSWORD);
+        userInDB.setRoles("ROLE_USER");
+        userInDB.setUsername(USER_USERNAME);
+        userInDB.setActive(true);
+        userInDB.setId(1);
+
+        AuthUserDetails authUserDetails = new AuthUserDetails(userInDB);
+
+        UserDto updatedUser = new UserDto();
+        updatedUser.setUsername(USER_USERNAME_UPDATED);
+
+        // mocking spring security context ***/
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getPrincipal()).thenReturn(authUserDetails);
+        SecurityContextHolder.setContext(securityContext);
+
+        ResultActions resultActions = mockMvc
+                .perform(MockMvcRequestBuilders.patch(USER_CONTROLLER_URI)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(updatedUser)));
+
+        MvcResult result = resultActions.andReturn();
+        MockHttpServletResponse response = result.getResponse();
+
+        Assertions.assertEquals(response.getStatus(), HttpStatus.OK.value());
     }
 }

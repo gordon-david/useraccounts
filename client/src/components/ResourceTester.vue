@@ -29,7 +29,8 @@
 <script>
 export default {
   props:{
-    jwt: String
+    jwt: String,
+    apiUrl: String
   },
   data: function () {
     return {
@@ -48,7 +49,7 @@ export default {
   },
   methods: {
     fetchAdmin() {
-      fetch("http://localhost:7050/admintestresource")
+      fetch(this.apiUrl + "/admintestresource")
         .then((response) => {
           if (!response.ok) {
             this.adminClass = this.error;
@@ -63,7 +64,7 @@ export default {
     },
     fetchUser() {
       console.log("ping");
-      fetch("http://localhost:7050/usertestresource", {
+      fetch(this.apiUrl + "/usertestresource", {
         headers: {
           "Authorization": "Bearer " + this.jwt
         }
@@ -81,7 +82,7 @@ export default {
         });
     },
     fetchHome() {
-      fetch("http://localhost:7050/hometestresource")
+      fetch(this.apiUrl + "/hometestresource")
         .then((response) => {
           if (!response.ok) {
             this.homeClass = this.error;
