@@ -5,11 +5,14 @@ This projects aims to exhibit a simple JSON Web Token based authentication schem
 ## Basic Authentication Lifecycle
 
 **Network Calls**
+
 ![Network Calls](./assets/network-calls.png)
 
 **Not Authenticated**
+
 ![Before Authentication](./assets/before-authentication.png)
 
 **After Authentication**
+
 ![After Authentication](./assets/after-authentication.png)
 
