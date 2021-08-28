@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class ExampleResource {
+public class ExampleResourceController {
 
     // accessible publicly
     @GetMapping("/hometestresource")
