@@ -5,12 +5,9 @@ import gordon.api.persistence.User;
 import gordon.api.persistence.UserRepository;
 import gordon.api.service.UserDataService;
 import gordon.api.web.UserDto;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
@@ -48,7 +45,7 @@ public class UserDataServiceIntegrationTest {
 
   @Test
   void canDeleteAUser(){
-    userDataService.deleteByUsername(userInDatabase.getUsername());
+    userDataService.deleteById(userInDatabase.getId());
     assertTrue(userRepository.findByUsername(userInDatabase.getUsername()).isEmpty());
   }
 }

@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.print.attribute.standard.Media;
@@ -50,6 +47,23 @@ public class UserController {
     principle = (AuthUserDetails)principleTemp;
 
     userDataService.update(principle.getId(), userDto);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping(value= "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
+  public ResponseEntity<Void> deleteUser() {
+    Object principleTemp = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    AuthUserDetails principle;
+
+    if(!(principleTemp instanceof  AuthUserDetails)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    principle = (AuthUserDetails) principleTemp;
+
+    userDataService.deleteById(principle.getId());
 
     return ResponseEntity.ok().build();
   }

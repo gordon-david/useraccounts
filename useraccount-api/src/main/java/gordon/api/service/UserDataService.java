@@ -77,9 +77,9 @@ public class UserDataService {
     return userRepository.save(toUpdate);
   }
 
-  public void deleteByUsername(@NotNull String username) {
+  public void deleteById(@NotNull int userId) {
 
-    Optional<User> user = userRepository.findByUsername(username);
+    Optional<User> user = userRepository.findById(String.valueOf(userId));
 
     if(user.isEmpty()){
       throw new UsernameNotFoundException("no user with that username is found");
