@@ -1,23 +1,3 @@
-# Build Step
-#from openjdk:11 as build
-#workdir workspace/app
-#
-#copy mvnw .
-#copy .mvn .mvn
-#copy pom.xml .
-#copy src src
-#
-#run ./mvnw install -DskipTests
-#
-#from openjdk:11 as build
-#workdir workspace/app
-#
-#copy mvnw .
-#copy .mvn .mvn
-#copy pom.xml .
-#copy src src
-#
-#run ./mvnw install -DskipTests
 FROM maven:latest as builder
 WORKDIR /app
 COPY pom.xml .
