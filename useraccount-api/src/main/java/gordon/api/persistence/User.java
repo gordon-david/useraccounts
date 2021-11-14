@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.)
     private int id;
 
     @Column(nullable = false, unique = true)

@@ -5,6 +5,10 @@ import gordon.api.validation.UserIdentityValidationGroup;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * UserDTO is a data transmission object intended to be used as a type
+ * for incoming requests.
+ */
 public class UserDto {
   @NotNull(groups = {UserIdentityValidationGroup.class})
   @Size(min = 1)
